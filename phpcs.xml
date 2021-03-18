@@ -4,6 +4,11 @@
 
 	<rule ref="PHPCompatibilityWP"/>
 
+	<rule ref="PHPCompatibility">
+    <exclude name="PHPCompatibility.FunctionUse.ArgumentFunctionsReportCurrentValue.NeedsInspection"/>
+		<exclude name="PHPCompatibility.FunctionNameRestrictions.NewMagicMethods.__serializeFound"/>
+	</rule>
+
 	<rule ref="WordPress-Core">
 		<!--
 		OK, real talk right now. Yoda conditions are ridiculous.
