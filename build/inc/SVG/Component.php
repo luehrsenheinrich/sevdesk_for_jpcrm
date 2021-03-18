@@ -1,6 +1,6 @@
 <?php
 /**
- * Gbplugin\SVG\Component class
+ * Sdjpcrm\SVG\Component class
  *
  * @package sdjpcrm
  */

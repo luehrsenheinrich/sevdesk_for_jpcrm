@@ -1,6 +1,6 @@
 <?php
 /**
- * _Lhpbp\Plugin class
+ * Sdjpcrm\Plugin class
  *
  * @package sdjpcrm
  */
@@ -129,10 +129,9 @@ class Plugin {
 	 */
 	protected function get_default_components() {
 		$components = array(
-			new Blocks\Component(),
 			new i18n\Component(),
-			new ACF\Component(),
 			new SVG\Component(),
+			new SevDesk\Component(),
 		);
 
 		return $components;

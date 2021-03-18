@@ -1,6 +1,6 @@
 <?php
 /**
- * _Lhpbp\Plugin_Function_Interface interface
+ * Sdjpcrm\Plugin_Function_Interface interface
  *
  * @package sdjpcrm
  */

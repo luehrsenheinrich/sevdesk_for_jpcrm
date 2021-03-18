@@ -1,8 +1,6 @@
 {
 	"plugins": [
-		"./trunk"
-	],
-	"plugins": [
+		"./trunk",
 		"https://downloads.wordpress.org/plugin/wordpress-importer.zip",
 		"https://downloads.wordpress.org/plugin/query-monitor.zip",
 		"https://downloads.wordpress.org/plugin/debug-bar.zip",

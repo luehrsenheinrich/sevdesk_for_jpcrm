@@ -60,7 +60,7 @@
     "dev": "npm run start && grunt watch",
     "remove": "wp-env destroy",
     "prestart": "npm install && composer install && npx grunt deploy",
-    "start": "npx wp-env start --update",
+    "start": "npx wp-env start",
     "stop": "npx wp-env stop",
     "clean": "npx wp-env clean all"
   },
