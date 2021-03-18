@@ -2,7 +2,7 @@
 /**
  * Test file.
  *
- * @package lhpbp
+ * @package sdjpcrm
  */
 
-namespace WpMunich\lhpbp;
+namespace WpMunich\sdjpcrm;

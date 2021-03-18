@@ -2,11 +2,11 @@
 /**
  * Lhplugin\Blocks\Component class
  *
- * @package lhpbp
+ * @package sdjpcrm
  */
 
-namespace WpMunich\lhpbp\Blocks;
-use WpMunich\lhpbp\Component_Interface;
+namespace WpMunich\sdjpcrm\Blocks;
+use WpMunich\sdjpcrm\Component_Interface;
 use function add_action;
 use function acf_register_block_type;
 
@@ -43,12 +43,12 @@ class Component implements Component_Interface {
 		acf_register_block_type(
 			array(
 				'name'            => 'acf-demo-block',
-				'title'           => __( 'Demo Block', 'lhpbp' ),
-				'description'     => __( 'A demo block to show that everything is working.', 'lhpbp' ),
-				'category'        => 'lhpbp-blocks',
+				'title'           => __( 'Demo Block', 'sdjpcrm' ),
+				'description'     => __( 'A demo block to show that everything is working.', 'sdjpcrm' ),
+				'category'        => 'sdjpcrm-blocks',
 				'icon'            => 'screenoptions',
-				'keywords'        => array( __( 'ACF', 'lhpbp' ), __( 'Demo', 'lhpbp' ), __( 'Block', 'lhpbp' ) ),
-				'render_template' => apply_filters( 'lh_acf_block_template_path', _LHPBP_PATH . 'blocks/acf/template.php', 'acf-demo-block' ),
+				'keywords'        => array( __( 'ACF', 'sdjpcrm' ), __( 'Demo', 'sdjpcrm' ), __( 'Block', 'sdjpcrm' ) ),
+				'render_template' => apply_filters( 'lh_acf_block_template_path', SDJPCRM_PATH . 'blocks/acf/template.php', 'acf-demo-block' ),
 				'mode'            => 'auto',
 				'supports'        => array(
 					'align' => array( 'wide', 'full' ),
@@ -69,8 +69,8 @@ class Component implements Component_Interface {
 			$categories,
 			array(
 				array(
-					'slug'  => 'lhpbp-blocks',
-					'title' => __( 'Luehrsen // Heinrich', 'lhpbp' ),
+					'slug'  => 'sdjpcrm-blocks',
+					'title' => __( 'Luehrsen // Heinrich', 'sdjpcrm' ),
 				),
 			)
 		);
@@ -82,7 +82,7 @@ class Component implements Component_Interface {
 	 * @return void
 	 */
 	public function enqueue_block_editor_assets() {
-		$script_asset = include( _LHPBP_PATH . 'blocks/block-helper.min.asset.php' ); // phpcs:ignore
-		wp_enqueue_script( 'lhpbp-block-helper', _LHPBP_PATH . 'blocks/block-helper.min.js', array_merge( $script_asset['dependencies'], array() ), _LHPBP_VERSION, true );
+		$script_asset = include( SDJPCRM_PATH . 'blocks/block-helper.min.asset.php' ); // phpcs:ignore
+		wp_enqueue_script( 'sdjpcrm-block-helper', SDJPCRM_PATH . 'blocks/block-helper.min.js', array_merge( $script_asset['dependencies'], array() ), SDJPCRM_VERSION, true );
 	}
 }

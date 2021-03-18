@@ -2,10 +2,10 @@
 /**
  * The class that holds one svg image.
  *
- * @package lhpbp/SVG
+ * @package sdjpcrm/SVG
  */
 
-namespace WpMunich\lhpbp\SVG;
+namespace WpMunich\sdjpcrm\SVG;
 use \DOMDocument;
 
 defined( 'ABSPATH' ) || exit;

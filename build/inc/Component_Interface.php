@@ -2,10 +2,10 @@
 /**
  * _Lhpbp\Component_Interface interface
  *
- * @package lhpbp
+ * @package sdjpcrm
  */
 
-namespace WpMunich\lhpbp;
+namespace WpMunich\sdjpcrm;
 
 /**
  * Interface for a plugin component.

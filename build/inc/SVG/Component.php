@@ -2,12 +2,12 @@
 /**
  * Gbplugin\SVG\Component class
  *
- * @package lhpbp
+ * @package sdjpcrm
  */
 
-namespace WpMunich\lhpbp\SVG;
-use WpMunich\lhpbp\Component_Interface;
-use WpMunich\lhpbp\Plugin_Function_Interface;
+namespace WpMunich\sdjpcrm\SVG;
+use WpMunich\sdjpcrm\Component_Interface;
+use WpMunich\sdjpcrm\Plugin_Function_Interface;
 use function add_action;
 use \WP_Error;
 
@@ -33,7 +33,7 @@ class Component implements Component_Interface, Plugin_Function_Interface {
 	}
 
 	/**
-	 * Gets template tags to expose as methods on the Template_Tags class instance, accessible through `wp_lhpbp()`.
+	 * Gets template tags to expose as methods on the Template_Tags class instance, accessible through `wp_sdjpcrm()`.
 	 *
 	 * @return array Associative array of $method_name => $callback_info pairs. Each $callback_info must either be
 	 *               a callable or an array with key 'callable'. This approach is used to reserve the possibility of
@@ -66,8 +66,8 @@ class Component implements Component_Interface, Plugin_Function_Interface {
 			case ( file_exists( get_template_directory() . $path ) ):
 				$final_path = get_template_directory() . $path;
 				break;
-			case ( file_exists( _LHPBP_PATH . $path ) ):
-				$final_path = _LHPBP_PATH . $path;
+			case ( file_exists( SDJPCRM_PATH . $path ) ):
+				$final_path = SDJPCRM_PATH . $path;
 				break;
 			default:
 				return false;

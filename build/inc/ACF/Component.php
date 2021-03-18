@@ -2,11 +2,11 @@
 /**
  * Lhplugin\ACF\Component class
  *
- * @package lhpbp
+ * @package sdjpcrm
  */
 
-namespace WpMunich\lhpbp\ACF;
-use WpMunich\lhpbp\Component_Interface;
+namespace WpMunich\sdjpcrm\ACF;
+use WpMunich\sdjpcrm\Component_Interface;
 use function add_action;
 use function wp_get_environment_type;
 use function acf_add_options_page;
@@ -29,7 +29,7 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		if ( wp_get_environment_type() === 'development' && defined( 'LH_CURRENTLY_EDITING' ) && LH_CURRENTLY_EDITING === 'lhpbp' ) {
+		if ( wp_get_environment_type() === 'development' && defined( 'LH_CURRENTLY_EDITING' ) && LH_CURRENTLY_EDITING === 'sdjpcrm' ) {
 			add_filter( 'acf/settings/save_json', array( $this, 'acf_json_save_point' ) );
 		}
 
@@ -46,7 +46,7 @@ class Component implements Component_Interface {
 	 * @return string       Save path.
 	 */
 	public function acf_json_save_point( $path ) {
-		$path = _LHPBP_PATH . 'acf-json';
+		$path = SDJPCRM_PATH . 'acf-json';
 		return $path;
 	}
 
@@ -58,7 +58,7 @@ class Component implements Component_Interface {
 	 * @return array        An array of paths.
 	 */
 	public function acf_json_load_point( $paths ) {
-		$paths[] = _LHPBP_PATH . 'acf-json';
+		$paths[] = SDJPCRM_PATH . 'acf-json';
 
 		return $paths;
 	}
@@ -82,9 +82,9 @@ class Component implements Component_Interface {
 
 		$option_page = acf_add_options_page(
 			array(
-				'page_title' => __( 'Plugin Settings', 'lhpbp' ),
-				'menu_title' => __( 'Plugin Settings', 'lhpbp' ),
-				'menu_slug'  => 'lhpbp-plugin-general-settings',
+				'page_title' => __( 'Plugin Settings', 'sdjpcrm' ),
+				'menu_title' => __( 'Plugin Settings', 'sdjpcrm' ),
+				'menu_slug'  => 'sdjpcrm-plugin-general-settings',
 				'capability' => 'edit_posts',
 				'redirect'   => false,
 			)

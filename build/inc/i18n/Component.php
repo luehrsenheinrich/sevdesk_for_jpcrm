@@ -2,11 +2,11 @@
 /**
  * _Lhpbp\i18n\Component class
  *
- * @package lhpbp
+ * @package sdjpcrm
  */
 
-namespace WpMunich\lhpbp\i18n;
-use WpMunich\lhpbp\Component_Interface;
+namespace WpMunich\sdjpcrm\i18n;
+use WpMunich\sdjpcrm\Component_Interface;
 use function add_action;
 use function load_plugin_textdomain;
 
@@ -36,7 +36,7 @@ class Component implements Component_Interface {
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain(
-			'lhpbp',
+			'sdjpcrm',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
