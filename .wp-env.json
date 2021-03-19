@@ -3,9 +3,11 @@
 		"./trunk",
 		"https://downloads.wordpress.org/plugin/wordpress-importer.zip",
 		"https://downloads.wordpress.org/plugin/query-monitor.zip",
-		"https://downloads.wordpress.org/plugin/debug-bar.zip",
-		"https://downloads.wordpress.org/plugin/zero-bs-crm.zip"
+		"https://downloads.wordpress.org/plugin/debug-bar.zip"
 	],
+	"mappings": {
+		"wp-content/plugins/zero-bs-crm": "./zero-bs-crm"
+	},
 	"env": {
 		"development": {
 			"port": 80,
