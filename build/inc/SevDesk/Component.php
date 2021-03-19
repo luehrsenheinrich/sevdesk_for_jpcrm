@@ -26,5 +26,8 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
+		$contact = new models\Contact( array( 'id' => 27176372 ), true );
+
+		var_dump( $contact );
 	}
 }
