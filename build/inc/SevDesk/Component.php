@@ -26,8 +26,8 @@ class Component implements Component_Interface {
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		$contact = new models\Contact( array( 'id' => 27176372 ), true );
+		$sevdesk = new SevDesk();
 
-		var_dump( $contact );
+		var_dump( $sevdesk->get_contacts() );
 	}
 }

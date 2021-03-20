@@ -7,11 +7,12 @@
 
 namespace WpMunich\sdjpcrm\SevDesk\models;
 use \WP_Error;
+use \DateTime;
 
 /**
  * The contact class.
  */
-class Contact extends SevdeskObject {
+class Contact extends SevdeskModelObject {
 
 	/**
 	 * The sevDesk Object name this object represents.
