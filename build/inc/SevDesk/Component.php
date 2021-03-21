@@ -14,6 +14,13 @@ use WpMunich\sdjpcrm\Component_Interface;
 class Component implements Component_Interface {
 
 	/**
+	 * The currently active instance for the sevdesk api object.
+	 *
+	 * @var null|object
+	 */
+	private $sevdesk = null;
+
+	/**
 	 * Gets the unique identifier for the plugin component.
 	 *
 	 * @return string Component slug.
@@ -23,11 +30,31 @@ class Component implements Component_Interface {
 	}
 
 	/**
+	 * Gets template tags to expose as methods on the Template_Tags class instance, accessible through `wp_sdjpcrm()`.
+	 *
+	 * @return array Associative array of $method_name => $callback_info pairs. Each $callback_info must either be
+	 *               a callable or an array with key 'callable'. This approach is used to reserve the possibility of
+	 *               adding support for further arguments in the future.
+	 */
+	public function plugin_functions() {
+		return array(
+			'sevdesk' => array( $this, 'get_instance' ),
+		);
+	}
+
+	/**
 	 * Adds the action and filter hooks to integrate with WordPress.
 	 */
 	public function initialize() {
-		$sevdesk = new SevDesk();
+		$this->sevdesk = new SevDesk();
+	}
 
-		var_dump( $sevdesk->get_contacts() );
+	/**
+	 * Return the active instance.
+	 *
+	 * @return object The current sevdesk instance.
+	 */
+	public function get_instance() {
+		return $this->sevdesk;
 	}
 }

@@ -22,6 +22,13 @@ class Contact extends SevdeskModelObject {
 	protected $object_name = 'Contact';
 
 	/**
+	 * Specify which methods are allowed on the api.
+	 *
+	 * @var array
+	 */
+	protected $allowed_methods = array();
+
+	/**
 	 * Object data array.
 	 *
 	 * @var array
@@ -53,6 +60,10 @@ class Contact extends SevdeskModelObject {
 		'defaultDiscountPercentage' => 0,
 		'buyerReference'            => null,
 		'governmentAgency'          => 0,
+		'hasChildren'               => array(),
+		'communicationWays'         => array(),
+		'addresses'                 => array(),
+		'tags'                      => array(),
 	);
 
 	/**

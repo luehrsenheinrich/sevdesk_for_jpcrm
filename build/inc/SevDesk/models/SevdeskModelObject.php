@@ -128,7 +128,6 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 	 * @return mixed
 	 */
 	public function load( $args = array() ) {
-
 		$cache_key     = 'sevdesk_' . strtolower( $this->object_name ) . '_' . $args['id'];
 		$response_data = wp_cache_get( $cache_key, 'sevdesk' );
 

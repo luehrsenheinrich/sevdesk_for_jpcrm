@@ -47,8 +47,7 @@ class SevDesk extends SevDeskAPI {
 		$data = $this->validate_wp_response( $response );
 
 		if ( is_wp_error( $data ) ) {
-			$this->errors[] = $data;
-			return;
+			return $data;
 		}
 
 		$response_body = json_decode( $data['body'], true );
@@ -57,7 +56,7 @@ class SevDesk extends SevDeskAPI {
 		foreach ( $response_body['objects'] as $contact ) {
 			$cache_key = 'sevdesk_' . strtolower( $contact['objectName'] ) . '_' . $contact['id'];
 			wp_cache_set( $cache_key, $contact, 'sevdesk' );
-			$result[] = new models\Contact( $contact, true );
+			$result[] = new models\Contact( $contact );
 		}
 
 		return $result;
