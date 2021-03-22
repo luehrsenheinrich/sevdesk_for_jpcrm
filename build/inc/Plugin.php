@@ -132,7 +132,6 @@ class Plugin {
 			new i18n\Component(),
 			new SVG\Component(),
 			new SevDesk\Component(),
-			new Contacts\Component(),
 		);
 
 		return $components;

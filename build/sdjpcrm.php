@@ -45,5 +45,10 @@ if ( wp_get_environment_type() === 'development' ) {
 	require SDJPCRM_PATH . 'inc/test.php';
 }
 
+// Register our CLI if needed.
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	WP_CLI::add_command( 'sdjpcrm', new WpMunich\sdjpcrm\CLI\SDJPCRM_CLI() );
+}
+
 // Initialize the plugin.
 call_user_func( 'WpMunich\sdjpcrm\wp_sdjpcrm' );
