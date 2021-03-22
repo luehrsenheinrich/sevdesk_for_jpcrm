@@ -52,13 +52,27 @@ class SevDesk extends SevDeskAPI {
 
 		$response_body = json_decode( $data['body'], true );
 
-		$result = array();
+		$results = array(
+			'data' => array(),
+		);
 		foreach ( $response_body['objects'] as $contact ) {
 			$cache_key = 'sevdesk_' . strtolower( $contact['objectName'] ) . '_' . $contact['id'];
 			wp_cache_set( $cache_key, $contact, 'sevdesk' );
-			$result[] = new models\Contact( $contact );
+			$results['data'][] = new models\Contact( $contact );
 		}
 
-		return $result;
+		if ( isset( $response_body['total'] ) ) {
+			$results['total'] = intval( $response_body['total'] );
+		}
+
+		if ( isset( $args['offset'] ) ) {
+			$results['offset'] = intval( $args['offset'] );
+		}
+
+		if ( isset( $args['limit'] ) ) {
+			$results['limit'] = intval( $args['limit'] );
+		}
+
+		return $results;
 	}
 }

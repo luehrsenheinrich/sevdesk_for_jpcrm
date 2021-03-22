@@ -7,11 +7,19 @@
 
 namespace WpMunich\sdjpcrm\SevDesk;
 use WpMunich\sdjpcrm\Component_Interface;
+use WpMunich\sdjpcrm\Plugin_Function_Interface;
 
 /**
- * A class to handle textdomains and other i18n related logic..
+ * A class to provide access to the sevdesk api object in a managable way.
+ *
+ * <code>
+ * <?php
+ *     $sevdesk = wp_sdjpcrm()->sevdesk();
+ *     $contacts = $sevdesk->get_contacts( $args );
+ * ?>
+ * </code>
  */
-class Component implements Component_Interface {
+class Component implements Component_Interface, Plugin_Function_Interface {
 
 	/**
 	 * The currently active instance for the sevdesk api object.
