@@ -8,7 +8,7 @@
 namespace WpMunich\sdjpcrm\SevDesk\crawler;
 
 /**
- * A class to handle the synchronisation of sevDesk Contacts into JetPack CRM.
+ * A class to handle the synchronisation of sevDesk Contacts into Jetpack CRM.
  */
 class Contacts extends Sevdesk_Crawler {
 
@@ -21,7 +21,7 @@ class Contacts extends Sevdesk_Crawler {
 
 	/**
 	 * Retrieve the next set of contacts from sevDesk that we want to sync into
-	 * JetPack CRM.
+	 * Jetpack CRM.
 	 *
 	 * @return array An array of contacts to sync.
 	 */
@@ -51,7 +51,7 @@ class Contacts extends Sevdesk_Crawler {
 		// If the new offset is larger than our total resultset we reset the query.
 		if ( $args['offset'] >= $contacts['total'] ) {
 			$args = array(
-				'updateAfter' => 0,
+				'updateAfter' => $args['current_active_query_start'],
 			);
 		}
 

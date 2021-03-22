@@ -55,6 +55,7 @@ class Component implements Component_Interface, Plugin_Function_Interface {
 	 */
 	public function initialize() {
 		$this->sevdesk = new SevDesk();
+		add_filter( 'zbs_approved_sources', array( $this, 'add_external_source' ) );
 	}
 
 	/**
@@ -64,5 +65,10 @@ class Component implements Component_Interface, Plugin_Function_Interface {
 	 */
 	public function get_instance() {
 		return $this->sevdesk;
+	}
+
+	public function add_external_source( $external_sources = array() ) {
+			$external_sources['sevdesk'] = array( 'sevDesk', 'ico' => 'fa-stripe' );
+			return $external_sources;
 	}
 }

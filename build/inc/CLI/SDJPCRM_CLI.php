@@ -13,11 +13,11 @@ use function \WP_CLI\Utils\make_progress_bar;
 use function \WP_CLI\Utils\format_items;
 
 /**
- * Functions to handle the synchronisation of data between sevDesk and JetPack CRM.
+ * Functions to handle the synchronisation of data between sevDesk and Jetpack CRM.
  */
 class SDJPCRM_CLI extends WP_CLI_Command {
 	/**
-	 * Crawl and ingest contacts from sevDesk into JetPack CRM.
+	 * Crawl and ingest contacts from sevDesk into Jetpack CRM.
 	 *
 	 * @return void
 	 */
@@ -32,6 +32,19 @@ class SDJPCRM_CLI extends WP_CLI_Command {
 				'id'   => $c->get( 'id' ),
 				'name' => empty( $c->get( 'name' ) ) ? $c->get( 'surename' ) . ' ' . $c->get( 'familyname' ) : $c->get( 'name' ),
 			);
+
+			$is_company = ! empty( $c->get( 'name' ) );
+
+			if ( $is_company ) {
+				zeroBS_integrations_addOrUpdateCompany(
+					'sevdesk',
+					$c->get( 'id' ),
+					array(
+						'zbsc_coname' => $c->get( 'name' ),
+					),
+					$c->get( 'create' )
+				);
+			}
 
 			$progress->tick();
 		}
