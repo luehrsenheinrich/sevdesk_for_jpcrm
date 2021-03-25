@@ -23,7 +23,7 @@ class Contacts extends Sevdesk_Crawler {
 	 * Retrieve the next set of contacts from sevDesk that we want to sync into
 	 * Jetpack CRM.
 	 *
-	 * @return array An array of contacts to sync.
+	 * @return array An array of contacts.
 	 */
 	public function crawl_contacts() {
 		$args = wp_parse_args(
@@ -43,7 +43,11 @@ class Contacts extends Sevdesk_Crawler {
 		);
 
 		// Retrieve the contacts from the sevDesk API.
-		$contacts = $this->api->get_contacts( $args );
+		$contacts = $this->api->get_items( 'Contact', $args );
+
+		if ( is_wp_error( $contacts ) ) {
+			return $contacts;
+		}
 
 		// Iterate the offset.
 		$args['offset'] = intval( $args['offset'] ) + intval( $args['limit'] );
@@ -51,7 +55,7 @@ class Contacts extends Sevdesk_Crawler {
 		// If the new offset is larger than our total resultset we reset the query.
 		if ( $args['offset'] >= $contacts['total'] ) {
 			$args = array(
-				'updateAfter' => $args['current_active_query_start'],
+				'updateAfter' => 0, // $args['current_active_query_start'],
 			);
 		}
 
@@ -60,5 +64,34 @@ class Contacts extends Sevdesk_Crawler {
 
 		// Return the found contacts.
 		return $contacts['data'];
+	}
+
+	/**
+	 * Get a single contact.
+	 *
+	 * @param  array $args An array of arguments for the request.
+	 *
+	 * @return Object      The contact object.
+	 */
+	public function get_contact( $args ) {
+
+		$args = wp_parse_args(
+			$args,
+			array(
+				'id'         => 0,
+				'embed'      => 'parent,tags,category,communicationWays,addresses,addresses.category,addresses.country,hasChildren',
+				'emptyState' => true,
+				'distance'   => 0,
+			)
+		);
+
+		// Retrieve the contacts from the sevDesk API.
+		$contacts = $this->api->get_items( 'Contact', $args, true );
+
+		if ( is_wp_error( $contacts ) ) {
+			return $contacts;
+		}
+
+		return array_pop( $contacts['data'] );
 	}
 }

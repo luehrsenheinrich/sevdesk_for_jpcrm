@@ -7,6 +7,7 @@
 
 namespace WpMunich\sdjpcrm\SevDesk\crawler;
 use WpMunich\sdjpcrm\SevDesk\SevDeskAPI;
+use \DateTime;
 
 /**
  * Interface for a plugin component that exposes plugin functions.

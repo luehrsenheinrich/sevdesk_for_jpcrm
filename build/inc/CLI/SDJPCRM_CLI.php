@@ -22,6 +22,7 @@ class SDJPCRM_CLI extends WP_CLI_Command {
 	 * @return void
 	 */
 	public function crawl_contacts() {
+		global $zbs;
 		$contacts = wp_sdjpcrm()->sevdesk()->contacts->crawl_contacts();
 		$progress = make_progress_bar( 'Synchronising contacts', count( $contacts ) );
 
@@ -36,14 +37,21 @@ class SDJPCRM_CLI extends WP_CLI_Command {
 			$is_company = ! empty( $c->get( 'name' ) );
 
 			if ( $is_company ) {
-				zeroBS_integrations_addOrUpdateCompany(
-					'sevdesk',
-					$c->get( 'id' ),
+				// phpcs:ignore
+				/*
+				$zbs->DAL->companies->addUpdateCompany(
 					array(
-						'zbsc_coname' => $c->get( 'name' ),
-					),
-					$c->get( 'create' )
+						'id'   => -1,
+						'data' => array(
+							'name'            => $c->get( 'name' ),
+							'externalSources' => array(
+								'source' => 'sevdesk',
+								'uid'    => $c->get( 'id' ),
+							),
+						),
+					)
 				);
+				*/
 			}
 
 			$progress->tick();
@@ -61,5 +69,14 @@ class SDJPCRM_CLI extends WP_CLI_Command {
 	public function reset_contacts_crawler() {
 		wp_sdjpcrm()->sevdesk()->contacts->reset_current_active_crawl();
 		WP_CLI::success( 'The contacts crawler has been reset.' );
+	}
+
+	/**
+	 * Helper function to dump some debug stuff. Should be deleted.
+	 *
+	 * @return void
+	 */
+	public function dump() {
+		global $zbs;
 	}
 }

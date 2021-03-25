@@ -10,14 +10,14 @@ namespace WpMunich\sdjpcrm\SevDesk\models;
 /**
  * The contact class.
  */
-class Category extends SevdeskModelObject {
+class ContactAddress extends SevdeskModelObject {
 
 	/**
 	 * The sevDesk Object name this object represents.
 	 *
 	 * @var string
 	 */
-	protected $object_name = 'Category';
+	protected $object_name = 'ContactAddress';
 
 	/**
 	 * Object data array.
@@ -25,11 +25,11 @@ class Category extends SevdeskModelObject {
 	 * @var array
 	 */
 	protected $data = array(
-		'name'            => null,
-		'priority'        => null,
-		'code'            => null,
-		'color'           => null,
-		'postingAccount'  => null,
-		'translationCode' => null,
+		'contact'  => array(),
+		'street'   => null,
+		'zip'      => null,
+		'city'     => null,
+		'country'  => null,
+		'category' => null,
 	);
 }

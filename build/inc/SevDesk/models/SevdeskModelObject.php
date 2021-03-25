@@ -8,6 +8,7 @@
 namespace WpMunich\sdjpcrm\SevDesk\models;
 use WpMunich\sdjpcrm\SevDesk\SevDeskAPI;
 use \WP_Error;
+use \DateTime;
 
 /**
  * The base sevDesk Object.
@@ -20,6 +21,27 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 	 * @var string
 	 */
 	protected $object_name = '';
+
+	/**
+	 * How many layers we are down on parsing objects.
+	 *
+	 * @var int
+	 */
+	protected $parse_depth = 0;
+
+	/**
+	 * Some basic data that is in every object.
+	 *
+	 * @var array
+	 */
+	protected $base_data = array(
+		'id'                    => 0,
+		'additionalInformation' => null,
+		'create'                => null,
+		'update'                => null,
+		'objectName'            => null,
+		'name'                  => null,
+	);
 
 	/**
 	 * Object data array.
@@ -40,10 +62,12 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 	 *
 	 * @param array $args An array of arguments for this invoice.
 	 * @param bool  $from_api Do we want to take the args as is or load from API.
+	 * @param int   $parse_depth How many layers we are in to parsing sevdesk objects.
 	 */
-	public function __construct( $args = array(), $from_api = false ) {
+	public function __construct( $args = array(), $from_api = false, $parse_depth = 0 ) {
 		parent::__construct();
-		$this->from_api = $from_api;
+		$this->from_api    = $from_api;
+		$this->parse_depth = $parse_depth;
 
 		// Do we have an ID? If so, try to load that ID.
 		if ( isset( $args['id'] ) && is_numeric( $args['id'] ) && $args['id'] > 0 && $from_api ) {
@@ -211,22 +235,29 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 		// cast external data to an array.
 		$external_data = json_decode( json_encode( $external_data ), true );
 
+		// Merge the base data into the data object.
+		$this->data = array_merge(
+			$this->base_data,
+			$this->data
+		);
+
 		$object_data = array();
 		// Only import keys, that we have defined in our default array.
 		foreach ( $this->data as $key => $default ) {
-			if ( isset( $external_data[ $key ] ) && ! empty( $external_data[ $key ] ) ) {
-				if (
-					is_array( $external_data[ $key ] ) &&
-					isset( $external_data[ $key ]['objectName'] ) &&
-					class_exists( __NAMESPACE__ . '\\' . $external_data[ $key ]['objectName'] )
-				) {
-					// We have to handle a sevDesk Object.
-					$class_name          = __NAMESPACE__ . '\\' . $external_data[ $key ]['objectName'];
-					$object_data[ $key ] = new $class_name( $external_data[ $key ], $this->from_api );
-				} else {
-					$object_data[ $key ] = $external_data[ $key ];
-				}
+			$data = $this->maybe_cast_object( $external_data, $key );
+			if ( ! empty( $data ) ) {
+				$object_data[ $key ] = $data;
 			}
+		}
+
+		if ( empty( $this->data['create'] ) ) {
+			$datetime             = new DateTime();
+			$this->data['create'] = $datetime->format( DateTime::ISO8601 );
+		}
+
+		if ( empty( $this->data['update'] ) ) {
+			$datetime             = new DateTime();
+			$this->data['update'] = $datetime->format( DateTime::ISO8601 );
 		}
 
 		// Merge the parsed data into our default data.
@@ -234,5 +265,34 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 			$this->data,
 			$object_data
 		);
+	}
+
+
+	private function maybe_cast_object( $external_data, $key ) {
+		if ( isset( $external_data[ $key ] ) && ! empty( $external_data[ $key ] ) ) {
+			if (
+				is_array( $external_data[ $key ] ) &&
+				isset( $external_data[ $key ]['objectName'] ) &&
+				class_exists( __NAMESPACE__ . '\\' . $external_data[ $key ]['objectName'] ) &&
+				$this->parse_depth < 3
+			) {
+				// We have to handle a sevDesk Object.
+				$class_name   = __NAMESPACE__ . '\\' . $external_data[ $key ]['objectName'];
+				$depth        = $this->parse_depth + 1;
+				$return_value = new $class_name( $external_data[ $key ], $this->from_api, $depth );
+			} elseif (
+				is_array( $external_data[ $key ] )
+			) {
+				$data_array = array();
+				foreach ( $external_data[ $key ] as $key2 => $value ) {
+					$data_array[ $key2 ] = $this->maybe_cast_object( $external_data[ $key ], $key2 );
+				}
+				$return_value = $data_array;
+			} else {
+				$return_value = $external_data[ $key ];
+			}
+
+			return $return_value;
+		}
 	}
 }

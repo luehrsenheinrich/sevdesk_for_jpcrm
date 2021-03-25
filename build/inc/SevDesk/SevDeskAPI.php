@@ -42,18 +42,20 @@ class SevDeskAPI {
 	}
 
 	/**
-	 * Get contacts from the sevDesk API.
+	 * Get items from the sevDesk API.
 	 *
 	 * @see https://5677.extern.sevdesk.dev/apiOverview/index.html#/doc-contacts
 	 *
-	 * @param  array $args An array of arguments for the api.
+	 * @param  string $object_name The name of the object to fetch from the api.
+	 * @param  array  $args        An array of arguments for the api.
+	 * @param  bool   $load_all    Load all items from the API, embedded or not.
 	 *
 	 * @return array       An array of contacts.
 	 */
-	public function get_contacts( $args = array() ) {
+	public function get_items( $object_name, $args = array(), $load_all = false ) {
 		$url = add_query_arg(
 			$args,
-			$this->api_url . 'Contact'
+			$this->api_url . $object_name
 		);
 
 		$response = wp_remote_request(
@@ -77,10 +79,14 @@ class SevDeskAPI {
 		$results = array(
 			'data' => array(),
 		);
-		foreach ( $response_body['objects'] as $contact ) {
-			$cache_key = 'sevdesk_' . strtolower( $contact['objectName'] ) . '_' . $contact['id'];
-			wp_cache_set( $cache_key, $contact, 'sevdesk' );
-			$results['data'][] = new models\Contact( $contact );
+
+		foreach ( $response_body['objects'] as $item ) {
+			if ( class_exists( __NAMESPACE__ . '\\models\\' . $item['objectName'] ) ) {
+				$class_name = __NAMESPACE__ . '\\models\\' . $item['objectName'];
+				$cache_key  = 'sevdesk_' . strtolower( $item['objectName'] ) . '_' . $item['id'];
+				wp_cache_set( $cache_key, $item, 'sevdesk' );
+				$results['data'][] = new $class_name( $item, $load_all );
+			}
 		}
 
 		if ( isset( $response_body['total'] ) ) {
