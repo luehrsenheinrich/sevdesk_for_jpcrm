@@ -20,6 +20,15 @@ class Contact extends SevdeskModelObject {
 	protected $object_name = 'Contact';
 
 	/**
+	 * Some more arguments for the load request.
+	 *
+	 * @var array
+	 */
+	protected $load_request_arguments = array(
+		'embed' => 'parent,tags,category,communicationWays,addresses,addresses.category,addresses.country,hasChildren',
+	);
+
+	/**
 	 * Object data array.
 	 *
 	 * @var array

@@ -7,6 +7,7 @@
 
 namespace WpMunich\sdjpcrm\SevDesk\models;
 use WpMunich\sdjpcrm\SevDesk\SevDeskAPI;
+use function WpMunich\sdjpcrm\wp_sdjpcrm;
 use \WP_Error;
 use \DateTime;
 
@@ -23,11 +24,11 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 	protected $object_name = '';
 
 	/**
-	 * How many layers we are down on parsing objects.
+	 * Some more arguments for the load request.
 	 *
-	 * @var int
+	 * @var array
 	 */
-	protected $parse_depth = 0;
+	protected $load_request_arguments = array();
 
 	/**
 	 * Some basic data that is in every object.
@@ -60,14 +61,12 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 	/**
 	 * Constructor.
 	 *
-	 * @param array $args An array of arguments for this invoice.
+	 * @param array $args An array of arguments for this item.
 	 * @param bool  $from_api Do we want to take the args as is or load from API.
-	 * @param int   $parse_depth How many layers we are in to parsing sevdesk objects.
 	 */
-	public function __construct( $args = array(), $from_api = false, $parse_depth = 0 ) {
+	public function __construct( $args = array(), $from_api = false ) {
 		parent::__construct();
-		$this->from_api    = $from_api;
-		$this->parse_depth = $parse_depth;
+		$this->from_api = $from_api;
 
 		// Do we have an ID? If so, try to load that ID.
 		if ( isset( $args['id'] ) && is_numeric( $args['id'] ) && $args['id'] > 0 && $from_api ) {
@@ -155,9 +154,14 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 		$cache_key     = 'sevdesk_' . strtolower( $this->object_name ) . '_' . $args['id'];
 		$response_data = wp_cache_get( $cache_key, 'sevdesk' );
 
+		$url = add_query_arg(
+			$this->load_request_arguments,
+			$this->api_url . $this->object_name . '/' . $args['id']
+		);
+
 		if ( $response_data === false ) {
 			$response = wp_remote_request(
-				$this->api_url . $this->object_name . '/' . $args['id'],
+				$url,
 				array(
 					'method'  => 'GET',
 					'headers' => array(
@@ -232,6 +236,10 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 	 */
 	protected function parse( $external_data ) {
 
+		if ( isset( $external_data['id'] ) && is_numeric( $external_data['id'] ) && $external_data['id'] > 0 ) {
+			wp_sdjpcrm()->sevdesk()->store( $this->object_name, $external_data['id'], $this );
+		}
+
 		// cast external data to an array.
 		$external_data = json_decode( json_encode( $external_data ), true );
 
@@ -267,19 +275,24 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 		);
 	}
 
-
+	/**
+	 * Parse the external data and maybe cast sevdesk objects.
+	 *
+	 * @param  array $external_data The external data.
+	 * @param  mixed $key           The current key.
+	 *
+	 * @return mixed                The parsed data.
+	 */
 	private function maybe_cast_object( $external_data, $key ) {
 		if ( isset( $external_data[ $key ] ) && ! empty( $external_data[ $key ] ) ) {
 			if (
 				is_array( $external_data[ $key ] ) &&
 				isset( $external_data[ $key ]['objectName'] ) &&
-				class_exists( __NAMESPACE__ . '\\' . $external_data[ $key ]['objectName'] ) &&
-				$this->parse_depth < 3
+				class_exists( __NAMESPACE__ . '\\' . $external_data[ $key ]['objectName'] )
 			) {
 				// We have to handle a sevDesk Object.
 				$class_name   = __NAMESPACE__ . '\\' . $external_data[ $key ]['objectName'];
-				$depth        = $this->parse_depth + 1;
-				$return_value = new $class_name( $external_data[ $key ], $this->from_api, $depth );
+				$return_value = wp_sdjpcrm()->sevdesk()->get( $external_data[ $key ]['objectName'], $external_data[ $key ]['id'], false, $external_data[ $key ] );
 			} elseif (
 				is_array( $external_data[ $key ] )
 			) {
