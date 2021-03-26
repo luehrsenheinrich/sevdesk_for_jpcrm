@@ -73,10 +73,11 @@ class Component implements Component_Interface, Plugin_Function_Interface {
 	 * @param array $external_sources An array of sources.
 	 */
 	public function add_external_source( $external_sources = array() ) {
-			$external_sources['sevdesk'] = array(
-				'sevDesk',
-				'ico' => 'fa-stripe',
-			);
-			return $external_sources;
+		$external_sources['sevdesk'] = array(
+			'sevDesk',
+			'ico' => 'fa-file',
+		);
+
+		return $external_sources;
 	}
 }

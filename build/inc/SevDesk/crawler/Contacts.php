@@ -32,7 +32,7 @@ class Contacts extends Sevdesk_Crawler {
 				'embed'                      => 'parent,tags,category,communicationWays,addresses,addresses.category,addresses.country,hasChildren',
 				'countAll'                   => true,
 				'depth'                      => 1,
-				'limit'                      => 10,
+				'limit'                      => 100,
 				'offset'                     => 0,
 				'emptyState'                 => true,
 				'distance'                   => 0,
@@ -55,7 +55,7 @@ class Contacts extends Sevdesk_Crawler {
 		// If the new offset is larger than our total resultset we reset the query.
 		if ( $args['offset'] >= $contacts['total'] ) {
 			$args = array(
-				'updateAfter' => 0, // $args['current_active_query_start'],
+				'updateAfter' => $args['current_active_query_start'],
 			);
 		}
 
