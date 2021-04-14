@@ -32,7 +32,7 @@ class Contacts extends Sevdesk_Crawler {
 				'embed'                      => 'parent,tags,category,communicationWays,addresses,addresses.category,addresses.country,hasChildren',
 				'countAll'                   => true,
 				'depth'                      => 1,
-				'limit'                      => 100,
+				'limit'                      => 10,
 				'offset'                     => 0,
 				'emptyState'                 => true,
 				'distance'                   => 0,

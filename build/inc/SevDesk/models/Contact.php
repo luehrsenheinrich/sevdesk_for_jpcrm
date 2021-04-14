@@ -61,4 +61,99 @@ class Contact extends SevdeskModelObject {
 		'tags'                      => array(),
 		'parent'                    => array(),
 	);
+
+	/**
+	 * If this object is a company or a contact.
+	 *
+	 * @return boolean If this object is a company.
+	 */
+	public function is_company() {
+		return ! empty( $this->get( 'name' ) );
+	}
+
+	/**
+	 * Save the current object to the CRM.
+	 *
+	 * @return bool|int The id of the ZBS Contact on success, false on failure.
+	 */
+	public function save_to_crm() {
+		global $zbs;
+
+		// Check if the current contact is a company or a person.
+		$is_company = ! empty( $this->get( 'name' ) );
+
+		$zbs_id = false;
+
+		if ( $is_company ) {
+
+			// Compose the data for Jetpack CRM.
+			$company = array(
+				'data' => array(
+					'status'          => $this->get( 'category' )->get( 'name' ),
+					'name'            => $this->get( 'name' ),
+					'created'         => strtotime( $this->get( 'create' ) ),
+					'externalSources' => array(
+						array(
+							'source' => 'sevdesk',
+							'uid'    => $this->get( 'id' ),
+						),
+					),
+					'notes'           => $this->get( 'description' ),
+				),
+			);
+
+			// Does this company already exist in the database?
+			// phpcs:ignore
+			$existing_company = $zbs->DAL->companies->getCompany(
+				-1,
+				array(
+					'externalSource'    => 'sevdesk',
+					'externalSourceUID' => $this->get( 'id' ),
+				)
+			);
+
+			// Check if the returned value means a company already exists.
+			if (
+				$existing_company &&
+				is_array( $existing_company ) &&
+				! empty( $existing_company ) &&
+				isset( $existing_company['id'] )
+			) {
+				$company['id'] = $existing_company['id'];
+			}
+
+			/**
+			 * Find the first address and add it to jpcrm.
+			 */
+			if ( is_array( $this->get( 'addresses' ) ) && count( $this->get( 'addresses' ) ) > 0 ) {
+				$address       = $this->get( 'addresses' )[0];
+				$jpcrm_address = array(
+					'addr1'    => $address->get( 'street' ),
+					'city'     => $address->get( 'city' ),
+					'country'  => $address->get( 'country' )->get( 'name' ),
+					'postcode' => $address->get( 'zip' ),
+				);
+
+				// Merge the address into the data array.
+				$company['data'] = array_merge( $company['data'], $jpcrm_address );
+			}
+
+			/**
+			 * Find the first email address and add it to jpcrm.
+			 */
+			if ( is_array( $this->get( 'communicationWays' ) ) && count( $this->get( 'communicationWays' ) ) > 0 ) {
+				foreach ( $this->get( 'communicationWays' ) as $cw ) {
+					if ( $cw->get( 'type' ) === 'EMAIL' ) {
+						$company['data']['email'] = $cw->get( 'value' );
+						break;
+					}
+				}
+			}
+
+			// phpcs:ignore
+			$zbs_id = $zbs->DAL->companies->addUpdateCompany( $company );
+		}
+
+		return $zbs_id;
+	}
 }

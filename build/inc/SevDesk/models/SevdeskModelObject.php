@@ -308,4 +308,14 @@ abstract class SevdeskModelObject extends SevDeskAPI implements \JsonSerializabl
 			return $return_value;
 		}
 	}
+
+	/**
+	 * Save the current object to the CRM.
+	 *
+	 * @return bool
+	 */
+	public function save_to_crm() {
+		_doing_it_wrong( __FUNCTION__, __( 'This object does not support saving to Jetpack CRM.' ), '0.0.1' );
+		return false;
+	}
 }
